@@ -38,6 +38,7 @@ namespace nkast.Wasm.Dom
         public delegate void OnMouseWheelDelegate(object sender, int deltaX, int deltaY, int deltaZ, int deltaMode);
         public delegate void OnKeyDownDelegate(object sender, char key, int keyCode, int location);
         public delegate void OnKeyUpDelegate(object sender, char key, int keyCode, int location);
+        public delegate void OnPrintableKeyReceivedDelegate(object sender, char key);
 
         public delegate void OnTouchStartDelegate(object sender, float x, float y, int identifier);
         public delegate void OnTouchMoveDelegate(object sender, float x, float y, int identifier);
@@ -57,6 +58,7 @@ namespace nkast.Wasm.Dom
         public OnMouseWheelDelegate OnMouseWheel;
         public OnKeyDownDelegate OnKeyDown;
         public OnKeyUpDelegate OnKeyUp;
+        public OnPrintableKeyReceivedDelegate OnPrintableKeyReceived;
 
         public OnTouchStartDelegate OnTouchStart;
         public OnTouchMoveDelegate OnTouchMove;
@@ -428,6 +430,15 @@ namespace nkast.Wasm.Dom
             var handler = wnd.OnKeyUp;
             if (handler != null)
                 handler(wnd, (char)key, keyCode, location);
+        }
+
+        [JSInvokable]
+        public static void JsWindowOnPrintableKeyReceived(int uid, char key)
+        {
+            Window wnd = WindowFromUid(uid);
+            var handler = wnd.OnPrintableKeyReceived;
+            if (handler != null)
+                handler(wnd, (char)key);
         }
 
         [JSInvokable]

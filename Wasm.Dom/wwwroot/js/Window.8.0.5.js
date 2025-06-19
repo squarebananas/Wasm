@@ -186,6 +186,8 @@
         {
             DotNet.invokeMethod('nkast.Wasm.Dom', 'JsWindowOnKeyDown', uid,
                 event.key.charCodeAt(0), event.keyCode, event.location);
+            if (event.key.length == 1)
+                DotNet.invokeMethod('nkast.Wasm.Dom', 'JsWindowOnPrintableKeyReceived', uid, event.key);
         });
         window.addEventListener('keyup', (event) =>
         {
