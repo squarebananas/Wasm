@@ -118,6 +118,10 @@
         let func = nkJSObject.funcMap[fid];
         return func(uid);
     },
+    JSInvoke1Long: function (fid, uid) {
+        let func = nkJSObject.funcMap[fid];
+        return func(uid);
+    },
     JSInvoke1Float: function(fid, uid)
     {
         let func = nkJSObject.funcMap[fid];
@@ -145,6 +149,10 @@
     },
     JSInvoke2Int: function(fid, uid, d)
     {
+        let func = nkJSObject.funcMap[fid];
+        return func(uid, d);
+    },
+    JSInvoke2Long: function (fid, uid, d) {
         let func = nkJSObject.funcMap[fid];
         return func(uid, d);
     },
@@ -206,6 +214,16 @@ window.nkJSUInt8Array =
 window.nkPromise =
 {
     GetValueBoolean: function (uid)
+    {
+        var pr = nkJSObject.GetObject(uid);
+        return pr.AsyncValue;
+    },
+    GetValueInt: function (uid)
+    {
+        var pr = nkJSObject.GetObject(uid);
+        return pr.AsyncValue;
+    },
+    GetValueLong: function (uid)
     {
         var pr = nkJSObject.GetObject(uid);
         return pr.AsyncValue;

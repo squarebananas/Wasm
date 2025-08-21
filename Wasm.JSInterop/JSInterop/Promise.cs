@@ -200,6 +200,32 @@ namespace nkast.Wasm.JSInterop
         }
     }
 
+    public class PromiseInt : Promise<int>
+    {
+        public PromiseInt(int uid) : base(uid)
+        {
+        }
+
+        protected override void OnCompleted()
+        {
+            int result = InvokeRetInt("nkPromise.GetValueInt");
+            _tcs.SetResult(result);
+        }
+    }
+
+    public class PromiseLong : Promise<long>
+    {
+        public PromiseLong(int uid) : base(uid)
+        {
+        }
+
+        protected override void OnCompleted()
+        {
+            int result = InvokeRetInt("nkPromise.GetValueLong");
+            _tcs.SetResult(result);
+        }
+    }
+
     public class PromiseJSObject<TResult> : Promise<TResult>
         where TResult : JSObject
     {
