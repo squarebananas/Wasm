@@ -12,6 +12,9 @@ namespace nkast.Wasm.JSInterop
         [JSImport("globalThis.window.nkJSObject.JSRegisterFunction")]
         private static partial int JSRegisterFunction(int pidentifier, int identifierLength);
 
+        [JSImport("globalThis.window.nkJSObject.JSInvoke0Void")]
+        private static partial void JSInvoke0Void(int fid);
+
         [JSImport("globalThis.window.nkJSObject.JSInvoke0Int")]
         private static partial int JSInvoke0Int(int fid);
 
@@ -23,6 +26,10 @@ namespace nkast.Wasm.JSInterop
 
         [JSImport("globalThis.window.nkJSObject.JSInvoke1Int")]
         private static partial int JSInvoke1Int(int fid, int uid);
+
+        [JSImport("globalThis.window.nkJSObject.JSInvoke1Long")]
+        [return: JSMarshalAs<JSType.Number>]
+        private static partial long JSInvoke1Long(int fid, int uid);
 
         [JSImport("globalThis.window.nkJSObject.JSInvoke1Float")]
         private static partial float JSInvoke1Float(int fid, int uid);
@@ -41,6 +48,10 @@ namespace nkast.Wasm.JSInterop
 
         [JSImport("globalThis.window.nkJSObject.JSInvoke2Int")]
         private static partial int JSInvoke2Int(int fid, int uid, int d);
+
+        [JSImport("globalThis.window.nkJSObject.JSInvoke2Long")]
+        [return: JSMarshalAs<JSType.Number>]
+        private static partial long JSInvoke2Long(int fid, int uid, int d);
 
         [JSImport("globalThis.window.nkJSObject.JSInvoke2Float")]
         private static partial float JSInvoke2Float(int fid, int uid, int d);
@@ -63,6 +74,33 @@ namespace nkast.Wasm.JSInterop
             return fid;
         }
 
+        protected static void StaticInvokeVoid(string identifier, int uid)
+        {
+            int fid = RegisterFunction(identifier);
+            JSInvoke1Void(fid, uid);
+        }
+
+        protected static unsafe void StaticInvokeVoid<T1>(string identifier, T1 arg1)
+        {
+            int fid = RegisterFunction(identifier);
+            var args = ValueTuple.Create(arg1, Net7Padding);
+            JSInvoke1Void(fid, (int)&args);
+        }
+
+        protected static unsafe void StaticInvokeVoid<T1>(string identifier, int uid, T1 arg1)
+        {
+            int fid = RegisterFunction(identifier);
+            var args = ValueTuple.Create(arg1, Net7Padding);
+            JSInvoke2Void(fid, uid, (int)&args);
+        }
+
+        protected static unsafe void StaticInvokeVoid<T1, T2>(string identifier, T1 arg1, T2 arg2)
+        {
+            int fid = RegisterFunction(identifier);
+            var args = ValueTuple.Create(arg1, arg2, Net7Padding);
+            JSInvoke1Void(fid, (int)&args);
+        }
+
         protected static int StaticInvokeRetInt(string identifier)
         {
             int fid = RegisterFunction(identifier);
@@ -81,6 +119,26 @@ namespace nkast.Wasm.JSInterop
             return JSInvoke2Int(fid, arg1, arg2);
         }
 
+        protected static unsafe int StaticInvokeRetInt<T1, T2>(string identifier, T1 arg1, T2 arg2)
+        {
+            int fid = RegisterFunction(identifier);
+            var args = ValueTuple.Create(arg1, arg2);
+            return JSInvoke1Int(fid, (int)&args);
+        }
+
+        protected static unsafe int StaticInvokeRetInt<T1, T2, T3>(string identifier, T1 arg1, T2 arg2, T3 arg3)
+        {
+            int fid = RegisterFunction(identifier);
+            var args = ValueTuple.Create(arg1, arg2, arg3);
+            return JSInvoke1Int(fid, (int)&args);
+        }
+
+        protected static string StaticInvokeRetString(string identifier, int uid)
+        {
+            int fid = RegisterFunction(identifier);
+            return JSInvoke1String(fid, uid);
+        }
+
         protected void Invoke(string identifier)
         {
             int fid = RegisterFunction(identifier);
@@ -97,6 +155,12 @@ namespace nkast.Wasm.JSInterop
         {
             int fid = RegisterFunction(identifier);
             return JSInvoke1Int(fid, Uid);
+        }
+
+        protected unsafe long InvokeRetLong(string identifier)
+        {
+            int fid = RegisterFunction(identifier);
+            return JSInvoke1Long(fid, Uid);
         }
 
         protected float InvokeRetFloat(string identifier)
@@ -137,6 +201,13 @@ namespace nkast.Wasm.JSInterop
             int fid = RegisterFunction(identifier);
             var args = ValueTuple.Create(arg1, Net7Padding);
             return JSInvoke2Int(fid, Uid, (int)&args);
+        }
+
+        protected unsafe long InvokeRetLong<T1>(string identifier, T1 arg1)
+        {
+            int fid = RegisterFunction(identifier);
+            var args = ValueTuple.Create(arg1, Net7Padding);
+            return JSInvoke2Long(fid, Uid, (int)&args);
         }
 
         protected unsafe float InvokeRetFloat<T1>(string identifier, T1 arg1)

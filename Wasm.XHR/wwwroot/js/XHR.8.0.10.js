@@ -30,7 +30,14 @@
     Send: function (uid, d)
     {
         var xhr = nkJSObject.GetObject(uid);
-        xhr.send(null);
+        try
+        {
+            xhr.send(null);
+        }
+        catch (e)
+        {
+            console.error("Error sending XMLHttpRequest: ", e);
+        }
     },
     GetStatus: function(uid,d)
     {

@@ -7,7 +7,7 @@ namespace nkast.Wasm.JSInterop
     public partial class CachedJSObject<TJSObject> : JSObject
         where TJSObject : JSObject
     {
-        private static Dictionary<int, WeakReference<JSObject>> _uidMap = new Dictionary<int, WeakReference<JSObject>>();
+        public static Dictionary<int, WeakReference<JSObject>> _uidMap = new Dictionary<int, WeakReference<JSObject>>();
 
         public CachedJSObject(int uid) : base(uid)
         {
