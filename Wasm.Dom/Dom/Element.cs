@@ -8,6 +8,23 @@ namespace nkast.Wasm.Dom
     public abstract class Element<TElement> : CachedJSObject<TElement>
         where TElement : JSObject
     {
+        public unsafe DOMRect GetBoundingClientRect()
+        {
+            DOMRect result = default;
+            Invoke<IntPtr>("nkElement.GetBoundingClientRect", new IntPtr(&result));
+            return result;
+        }
+
+        public int ClientLeft
+        {
+            get { return InvokeRetInt("nkElement.GetClientLeft"); }
+        }
+
+        public int ClientTop
+        {
+            get { return InvokeRetInt("nkElement.GetClientTop"); }
+        }
+
         public int ClientWidth
         {
             get { return InvokeRetInt("nkElement.GetClientWidth"); }
