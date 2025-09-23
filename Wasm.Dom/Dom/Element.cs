@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.JSInterop;
 using nkast.Wasm.JSInterop;
 
@@ -35,8 +36,44 @@ namespace nkast.Wasm.Dom
             get { return InvokeRetInt("nkElement.GetClientHeight"); }
         }
 
+        public string InnerHTML
+        {
+            get { return InvokeRetString("nkElement.GetInnerHTML"); }
+            set { Invoke("nkElement.SetInnerHTML", value); }
+        }
+
         protected Element(int uid) : base(uid)
         {
+        }
+
+        public TElement FirstElementChild()
+        {
+            int uid = InvokeRetInt("nkElement.FirstElementChild");
+            if (uid == -1)
+                return null;
+
+            TElement firstElementChild = CachedJSObject<TElement>.FromUid(uid);
+            if (firstElementChild != null)
+                return firstElementChild;
+
+            firstElementChild = (TElement)Activator.CreateInstance(
+                typeof(TElement),
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                null,
+                new object[] { uid },
+                null);
+
+            return firstElementChild;
+        }
+
+        public void AppendChild<THTMLElement>(Element<THTMLElement> child) where THTMLElement : JSObject
+        {
+            Invoke("nkElement.AppendChild", child.Uid);
+        }
+
+        public void RemoveChild<THTMLElement>(Element<THTMLElement> child) where THTMLElement : JSObject
+        {
+            Invoke("nkElement.RemoveChild", child.Uid);
         }
 
         protected override void Dispose(bool disposing)

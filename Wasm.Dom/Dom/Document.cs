@@ -60,6 +60,11 @@ namespace nkast.Wasm.Dom
                 return element;
 
             int uid = InvokeRetInt<string>("nkDocument.GetElementById", id);
+
+            element = CachedJSObject<TElement>.FromUid(uid);
+            if (element != null)
+                return element;
+
             if (uid != -1)
             {
                 element = CreateInstance<TElement>(uid);
@@ -68,6 +73,14 @@ namespace nkast.Wasm.Dom
             }
 
             return null;
+        }
+
+        public TElement CreateElement<TElement>(string localName)
+            where TElement : JSObject
+        {
+            int uid = InvokeRetInt("nkDocument.CreateElement", localName);
+            TElement element = CreateInstance<TElement>(uid);
+            return element;
         }
 
         protected static TElement CreateInstance<TElement>(int uid)

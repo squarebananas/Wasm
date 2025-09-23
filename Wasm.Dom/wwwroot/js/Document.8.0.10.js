@@ -25,7 +25,17 @@
         var dc = nkJSObject.GetObject(uid);
         var id = nkJSObject.ReadString(d+ 0);
         var el = dc.getElementById(id);
+        var eid = nkJSObject.GetUid(el);
+        if (eid !== -1)
+            return eid;
         return nkJSObject.RegisterObject(el);
+    },
+    CreateElement: function (uid, d)
+    {
+        var dc = nkJSObject.GetObject(uid);
+        var ln = nkJSObject.ReadString(d + 0);
+        var te = dc.createElement(ln);
+        return nkJSObject.RegisterObject(te);
     },
     HasFocus: function (uid)
     {
@@ -67,6 +77,40 @@ window.nkElement =
         var e = nkJSObject.GetObject(uid);
         return e.clientHeight;
     },
+    GetInnerHTML: function (uid)
+    {
+        var e = nkJSObject.GetObject(uid);
+        return e.innerHTML;
+    },
+    SetInnerHTML: function (uid, d)
+    {
+        var e = nkJSObject.GetObject(uid);
+        var h = nkJSObject.ReadString(d + 0);
+        e.innerHTML = h;
+    },
+    FirstElementChild: function (uid)
+    {
+        var e = nkJSObject.GetObject(uid);
+        var f = e.firstElementChild;
+        var fid = nkJSObject.GetUid(f);
+        if (fid !== -1)
+            return fid;
+        return nkJSObject.RegisterObject(f);
+    },
+    AppendChild: function (uid, d)
+    {
+        var n = nkJSObject.GetObject(uid);
+        var cid = Module.HEAP32[(d + 0) >> 2];
+        var c = nkJSObject.GetObject(cid);
+        n.appendChild(c);
+    },
+    RemoveChild: function (uid, d)
+    {
+        var n = nkJSObject.GetObject(uid);
+        var cid = Module.HEAP32[(d + 0) >> 2];
+        var c = nkJSObject.GetObject(cid);
+        n.removeChild(c);
+    }
 };
 
 window.nkHTMLElement =
