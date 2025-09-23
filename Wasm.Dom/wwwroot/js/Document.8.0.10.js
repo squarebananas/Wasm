@@ -11,6 +11,15 @@
         var tl = nkJSObject.ReadString(d+ 0);
         dc.title = tl;
     },
+    GetBody: function (uid)
+    {
+        var dc = nkJSObject.GetObject(uid);
+        var bo = dc.body;
+        var bid = nkJSObject.GetUid(bo);
+        if (bid !== -1)
+            return bid;
+        return nkJSObject.RegisterObject(bo);
+    },
     GetElementById: function (uid, d)
     {
         var dc = nkJSObject.GetObject(uid);

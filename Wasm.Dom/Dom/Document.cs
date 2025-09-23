@@ -9,6 +9,7 @@ namespace nkast.Wasm.Dom
     public class Document : JSObject
     {
         private readonly Window _window;
+        private Body _body;
         private readonly Dictionary<string, WeakReference<JSObject>> _elementsCache = new Dictionary<string, WeakReference<JSObject>>();
 
         public Window DefaultView { get { return _window; } }
@@ -17,6 +18,20 @@ namespace nkast.Wasm.Dom
         {
             get { return InvokeRetString("nkDocument.GetTitle"); }
             set { Invoke("nkDocument.SetTitle", value); }
+        }
+
+        public Body Body
+        {
+            get
+            {
+                if (_body == null)
+                {
+                    int uid = InvokeRetInt("nkDocument.GetBody");
+                    _body = new Body(uid);
+                }
+
+                return _body;
+            }
         }
 
         internal Document(Window window, int uid) : base(uid)
