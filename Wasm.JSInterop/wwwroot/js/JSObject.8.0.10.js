@@ -66,8 +66,9 @@
 
     ReadString: function(d)
     {
-        const pt = Module.HEAP32[(d)>>2];
-        var str = BINDING.conv_string(pt);
+        const pt = Module.HEAP32[d >> 2];
+        var len = Module.HEAP32[(pt + 8) >> 2];
+        var str = nkJSObject.ToJSString(pt + 12, len);
         return str;
     },
 
