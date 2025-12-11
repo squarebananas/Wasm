@@ -6,12 +6,9 @@ namespace nkast.Wasm.XR
 {
     public class XRJointSpace : XRSpace
     {
-        public string JointName
+        public XRHandJoint JointName
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { return (XRHandJoint)InvokeRetInt("XRJointSpace.GetJointName"); }
         }
 
         internal XRJointSpace(int uid) : base(uid)

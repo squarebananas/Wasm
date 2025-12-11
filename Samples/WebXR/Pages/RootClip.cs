@@ -318,36 +318,36 @@ namespace WebXR.Pages
         {
             int handJointCount = hand.Count;
 
-            XRJointSpace wristSpace = hand["wrist"];
+            XRJointSpace wristSpace = hand[XRHandJoint.Wrist];
 
-            XRJointSpace thumbMetacarpalSpace = hand["thumb-metacarpal"];
-            XRJointSpace thumbProximalSpace = hand["thumb-phalanx-proximal"];
-            XRJointSpace thumbDistalSpace = hand["thumb-phalanx-distal"];
-            XRJointSpace thumbTipSpace = hand["thumb-tip"];
+            XRJointSpace thumbMetacarpalSpace = hand[XRHandJoint.Thumb_Metacarpal];
+            XRJointSpace thumbProximalSpace = hand[XRHandJoint.Thumb_Phalanx_Proximal];
+            XRJointSpace thumbDistalSpace = hand[XRHandJoint.Thumb_Phalanx_Distal];
+            XRJointSpace thumbTipSpace = hand[XRHandJoint.Thumb_Tip];
 
-            XRJointSpace indexMetacarpalSpace = hand["index-finger-metacarpal"];
-            XRJointSpace indexProximalSpace = hand["index-finger-phalanx-proximal"];
-            XRJointSpace indexIntermediateSpace = hand["index-finger-phalanx-intermediate"];
-            XRJointSpace indexDistalSpace = hand["index-finger-phalanx-distal"];
-            XRJointSpace indexTipSpace = hand["index-finger-tip"];
+            XRJointSpace indexMetacarpalSpace = hand[XRHandJoint.Index_Finger_Metacarpal];
+            XRJointSpace indexProximalSpace = hand[XRHandJoint.Index_Finger_Phalanx_Proximal];
+            XRJointSpace indexIntermediateSpace = hand[XRHandJoint.Index_Finger_Phalanx_Intermediate];
+            XRJointSpace indexDistalSpace = hand[XRHandJoint.Index_Finger_Phalanx_Distal];
+            XRJointSpace indexTipSpace = hand[XRHandJoint.Index_Finger_Tip];
 
-            XRJointSpace middleMetacarpalSpace = hand["middle-finger-metacarpal"];
-            XRJointSpace middleProximalSpace = hand["middle-finger-phalanx-proximal"];
-            XRJointSpace middleIntermediateSpace = hand["middle-finger-phalanx-intermediate"];
-            XRJointSpace middleDistalSpace = hand["middle-finger-phalanx-distal"];
-            XRJointSpace middleTipSpace = hand["middle-finger-tip"];
+            XRJointSpace middleMetacarpalSpace = hand[XRHandJoint.Middle_Finger_Metacarpal];
+            XRJointSpace middleProximalSpace = hand[XRHandJoint.Middle_Finger_Phalanx_Proximal];
+            XRJointSpace middleIntermediateSpace = hand[XRHandJoint.Middle_Finger_Phalanx_Intermediate];
+            XRJointSpace middleDistalSpace = hand[XRHandJoint.Middle_Finger_Phalanx_Distal];
+            XRJointSpace middleTipSpace = hand[XRHandJoint.Middle_Finger_Tip];
 
-            XRJointSpace ringMetacarpalSpace = hand["ring-finger-metacarpal"];
-            XRJointSpace ringProximalSpace = hand["ring-finger-phalanx-proximal"];
-            XRJointSpace ringIntermediateSpace = hand["ring-finger-phalanx-intermediate"];
-            XRJointSpace ringDistalSpace = hand["ring-finger-phalanx-distal"];
-            XRJointSpace ringTipSpace = hand["ring-finger-tip"];
+            XRJointSpace ringMetacarpalSpace = hand[XRHandJoint.Ring_Finger_Metacarpal];
+            XRJointSpace ringProximalSpace = hand[XRHandJoint.Ring_Finger_Phalanx_Proximal];
+            XRJointSpace ringIntermediateSpace = hand[XRHandJoint.Ring_Finger_Phalanx_Intermediate];
+            XRJointSpace ringDistalSpace = hand[XRHandJoint.Ring_Finger_Phalanx_Distal];
+            XRJointSpace ringTipSpace = hand[XRHandJoint.Ring_Finger_Tip];
 
-            XRJointSpace pinkyMetacarpalSpace = hand["pinky-finger-metacarpal"];
-            XRJointSpace pinkyProximalSpace = hand["pinky-finger-phalanx-proximal"];
-            XRJointSpace pinkyIntermediateSpace = hand["pinky-finger-phalanx-intermediate"];
-            XRJointSpace pinkyDistalSpace = hand["pinky-finger-phalanx-distal"];
-            XRJointSpace pinkyTipSpace = hand["pinky-finger-tip"];
+            XRJointSpace pinkyMetacarpalSpace = hand[XRHandJoint.Pinky_Finger_Metacarpal];
+            XRJointSpace pinkyProximalSpace = hand[XRHandJoint.Pinky_Finger_Phalanx_Proximal];
+            XRJointSpace pinkyIntermediateSpace = hand[XRHandJoint.Pinky_Finger_Phalanx_Intermediate];
+            XRJointSpace pinkyDistalSpace = hand[XRHandJoint.Pinky_Finger_Phalanx_Distal];
+            XRJointSpace pinkyTipSpace = hand[XRHandJoint.Pinky_Finger_Tip];
 
             DrawBone(dc, wristSpace, thumbMetacarpalSpace);
             DrawBone(dc, thumbMetacarpalSpace, thumbProximalSpace);

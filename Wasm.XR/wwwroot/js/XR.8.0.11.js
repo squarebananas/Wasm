@@ -413,6 +413,51 @@ window.nkXRFrame =
 
         return nkJSObject.RegisterObject(ps);
     },
+    FillJointRadii: function (uid, d)
+    {
+        var fr = nkJSObject.GetObject(uid);
+        var len = Module.HEAP32[(d + 0) >> 2];
+        var jArr = Module.HEAP32[(d + 4) >> 2];
+        var rArr = Module.HEAP32[(d + 8) >> 2];
+
+        var js = [];
+        var jArrPtr = Blazor.platform.getArrayEntryPtr(jArr, 0, 4);
+        for (var i = 0; i < len; i++)
+        {
+            var jid = Module.HEAP32[(jArrPtr + i * 4) >> 2];
+            var j = nkJSObject.GetObject(jid);
+            js.push(j);
+        }
+
+        var rArrPtr = Blazor.platform.getArrayEntryPtr(rArr, 0, 4);
+        var r = new Float32Array(Module.HEAPU8.buffer, rArrPtr, len);
+
+        return fr.fillJointRadii(js, r);
+    },
+    FillPoses: function (uid, d)
+    {
+        var fr = nkJSObject.GetObject(uid);
+        var len = Module.HEAP32[(d + 0) >> 2];
+        var jArr = Module.HEAP32[(d + 4) >> 2];
+        var bsid = Module.HEAP32[(d + 8) >> 2];
+        var tArr = Module.HEAP32[(d + 12) >> 2];
+
+        var ss = [];
+        var jArrPtr = Blazor.platform.getArrayEntryPtr(jArr, 0, 4);
+        for (var i = 0; i < len; i++)
+        {
+            var sid = Module.HEAP32[(jArrPtr + i * 4) >> 2];
+            var s = nkJSObject.GetObject(sid);
+            ss.push(s);
+        }
+
+        var bs = nkJSObject.GetObject(bsid);
+
+        var tArrPtr = Blazor.platform.getArrayEntryPtr(tArr, 0, 4);
+        var tr = new Float32Array(Module.HEAPU8.buffer, tArrPtr, len * 16);
+
+        return fr.fillPoses(ss, bs, tr);
+    },
     CreateAnchor: function (uid, d)
     {
         var fr = nkJSObject.GetObject(uid);
@@ -499,7 +544,7 @@ window.nkXRPose =
         Module.HEAPF32[(pt+ 0)>>2] = or.x;
         Module.HEAPF32[(pt+ 4)>>2] = or.y;
         Module.HEAPF32[(pt+ 8)>>2] = or.z;
-        Module.HEAPF32[(pt+12)>>2] = or.w;            
+        Module.HEAPF32[(pt+12)>>2] = or.w;
         var ps = tf.position;
         Module.HEAPF32[(pt+16)>>2] = ps.x;
         Module.HEAPF32[(pt+20)>>2] = ps.y;
@@ -528,7 +573,7 @@ window.nkXRViewerPose =
 
         for (var i=0; i < vs.length; i++)
         {
-            var view = vs[i];            
+            var view = vs[i];
             var vid = nkJSObject.GetUid(view);
             if (vid === -1)
                 vid = nkJSObject.RegisterObject(view);
@@ -553,7 +598,7 @@ window.nkXRView =
         Module.HEAPF32[(pt+ 0)>>2] = or.x;
         Module.HEAPF32[(pt+ 4)>>2] = or.y;
         Module.HEAPF32[(pt+ 8)>>2] = or.z;
-        Module.HEAPF32[(pt+12)>>2] = or.w;            
+        Module.HEAPF32[(pt+12)>>2] = or.w;
         var ps = tf.position;
         Module.HEAPF32[(pt+16)>>2] = ps.x;
         Module.HEAPF32[(pt+20)>>2] = ps.y;
@@ -655,18 +700,20 @@ window.nkXRInputSource =
             
         return nkJSObject.RegisterObject(gp);
     },
-
     GetHand: function (uid, d)
     {
         var is = nkJSObject.GetObject(uid);
 
-        var hd = is.hand;        
+        var hd = is.hand;
         if (hd == undefined) return -1; // // immersive-web-emulator returns undefined instead of null. https://immersive-web.github.io/webxr-hand-input/#xrinputsource-interface
 
         var uid = nkJSObject.GetUid(hd);
         if (uid !== -1)
             return uid;
 
+        hd.nkJSMapKeyType = 'int';
+        hd.nkJSMapReadKey = window.nkXRHandJoint.EnumToString;
+        hd.nkJSMapWriteKey = window.nkXRHandJoint.EnumToInt;
         return nkJSObject.RegisterObject(hd);
     },
 };
@@ -693,25 +740,82 @@ window.nkXRAnchor =
     },
 };
 
-window.nkXRHand =
+window.nkXRHandJoint =
 {
-    GetSize: function (uid, d)
+    EnumToString: function (i)
     {
-        var hd = nkJSObject.GetObject(uid);
-        return hd.size;
+        switch (i)
+        {
+            case 0: return "wrist";
+            case 1: return "thumb-metacarpal";
+            case 2: return "thumb-phalanx-proximal";
+            case 3: return "thumb-phalanx-distal";
+            case 4: return "thumb-tip";
+            case 5: return "index-finger-metacarpal";
+            case 6: return "index-finger-phalanx-proximal";
+            case 7: return "index-finger-phalanx-intermediate";
+            case 8: return "index-finger-phalanx-distal";
+            case 9: return "index-finger-tip";
+            case 10: return "middle-finger-metacarpal";
+            case 11: return "middle-finger-phalanx-proximal";
+            case 12: return "middle-finger-phalanx-intermediate";
+            case 13: return "middle-finger-phalanx-distal";
+            case 14: return "middle-finger-tip";
+            case 15: return "ring-finger-metacarpal";
+            case 16: return "ring-finger-phalanx-proximal";
+            case 17: return "ring-finger-phalanx-intermediate";
+            case 18: return "ring-finger-phalanx-distal";
+            case 19: return "ring-finger-tip";
+            case 20: return "pinky-finger-metacarpal";
+            case 21: return "pinky-finger-phalanx-proximal";
+            case 22: return "pinky-finger-phalanx-intermediate";
+            case 23: return "pinky-finger-phalanx-distal";
+            case 24: return "pinky-finger-tip";
+            default: return null;
+        }
     },
-    Get: function (uid, d)
+    EnumToInt: function (jn)
     {
-        var hd = nkJSObject.GetObject(uid);
-        var ky = nkJSObject.ReadString(d + 0);
-
-        var js = hd.get(ky);
-
-        var uid = nkJSObject.GetUid(js);
-        if (uid !== -1)
-            return uid;
-
-        return nkJSObject.RegisterObject(js);
+        switch (jn)
+        {
+            case "wrist": return 0;
+            case "thumb-metacarpal": return 1;
+            case "thumb-phalanx-proximal": return 2;
+            case "thumb-phalanx-distal": return 3;
+            case "thumb-tip": return 4;
+            case "index-finger-metacarpal": return 5;
+            case "index-finger-phalanx-proximal": return 6;
+            case "index-finger-phalanx-intermediate": return 7;
+            case "index-finger-phalanx-distal": return 8;
+            case "index-finger-tip": return 9;
+            case "middle-finger-metacarpal": return 10;
+            case "middle-finger-phalanx-proximal": return 11;
+            case "middle-finger-phalanx-intermediate": return 12;
+            case "middle-finger-phalanx-distal": return 13;
+            case "middle-finger-tip": return 14;
+            case "ring-finger-metacarpal": return 15;
+            case "ring-finger-phalanx-proximal": return 16;
+            case "ring-finger-phalanx-intermediate": return 17;
+            case "ring-finger-phalanx-distal": return 18;
+            case "ring-finger-tip": return 19;
+            case "pinky-finger-metacarpal": return 20;
+            case "pinky-finger-phalanx-proximal": return 21;
+            case "pinky-finger-phalanx-intermediate": return 22;
+            case "pinky-finger-phalanx-distal": return 23;
+            case "pinky-finger-tip": return 24;
+            default: return -1;
+        }
     },
 };
 
+window.XRJointSpace =
+{
+    GetJointName: function (uid)
+    {
+        var js = nkJSObject.GetObject(uid);
+        var jn = js.jointName;
+
+        var i = window.nkXRHandJoint.EnumToInt(jn);
+        return i;
+    },
+};

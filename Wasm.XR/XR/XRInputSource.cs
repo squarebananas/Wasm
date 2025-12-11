@@ -69,17 +69,15 @@ namespace nkast.Wasm.XR
         {
             get
             {
-                //int uid = InvokeRetInt("nkXRInputSource.GetGripSpace");
                 int uid = InvokeRetInt("nkXRInputSource.GetHand");
                 if (uid == -1)
                     return null;
 
-                XRHand hand = XRHand.FromUid(uid);
+                XRHand hand = (XRHand)XRHand.FromUid(uid);
                 if (hand != null)
                     return hand;
 
                 return new XRHand(uid);
-
             }
         }
 

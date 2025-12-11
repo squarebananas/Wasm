@@ -5,78 +5,37 @@ using nkast.Wasm.JSInterop;
 
 namespace nkast.Wasm.XR
 {
-    public class XRHand : CachedJSObject<XRHand>
-        , IReadOnlyDictionary<string, XRJointSpace>
+    public class XRHand : JSMap<XRHandJoint, int, XRJointSpace>
+        , IReadOnlyDictionary<XRHandJoint, XRJointSpace>
     {
-
-        internal XRHand(int uid) : base(uid)
+        internal XRHand(int uid) : base(uid, GetOrCreateJointSpaceFromUid, KeyToInnerKey, InnerKeyToKey)
         {
         }
 
-        public XRJointSpace this[string key]
+        private static XRJointSpace GetOrCreateJointSpaceFromUid(int uid)
         {
-            get
-            {
-                int uid = InvokeRetInt<String>("nkXRHand.Get", key);
-                if (uid == -1)
-                    return null;
+            if (uid == -1)
+                return null;
 
-                XRJointSpace jointSpace = (XRJointSpace)XRJointSpace.FromUid(uid);
-                if (jointSpace != null)
-                    return jointSpace;
+            XRJointSpace jointSpace = (XRJointSpace)XRJointSpace.FromUid(uid);
+            if (jointSpace != null)
+                return jointSpace;
 
-                return new XRJointSpace(uid);
-            }
+            return new XRJointSpace(uid);
         }
 
-        IEnumerable<string> IReadOnlyDictionary<string, XRJointSpace>.Keys
+        private static int KeyToInnerKey(XRHandJoint key)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            return (int)key;
         }
 
-        IEnumerable<XRJointSpace> IReadOnlyDictionary<string, XRJointSpace>.Values
+        private static XRHandJoint InnerKeyToKey(int key)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        bool IReadOnlyDictionary<string, XRJointSpace>.ContainsKey(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        bool IReadOnlyDictionary<string, XRJointSpace>.TryGetValue(string key, out XRJointSpace value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Count
-        {
-            get { return InvokeRetInt("nkXRHand.GetSize"); }
-        }
-
-        IEnumerator<KeyValuePair<string, XRJointSpace>> IEnumerable<KeyValuePair<string, XRJointSpace>>.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
+            return (XRHandJoint)key;
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-
-            }
-
             base.Dispose(disposing);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 using nkast.Wasm.JSInterop;
 
@@ -7,6 +8,7 @@ namespace nkast.Wasm.XR
 {
     public class XRFrame : CachedJSObject<XRFrame>
     {
+        private int[] _requestedUids = [];
 
         public XRSession Session
         {
@@ -53,6 +55,38 @@ namespace nkast.Wasm.XR
                 return null;
 
             return new XRJointPose(uid);
+        }
+
+        public bool FillJointRadii(XRJointSpace[] jointSpaces, float[] radii)
+        {
+            if (jointSpaces.Length == 0)
+                return false;
+            if (radii.Length < jointSpaces.Length)
+                throw new ArgumentException("radii array is smaller than jointSpaces array.");
+
+            if (_requestedUids.Length < jointSpaces.Length)
+                Array.Resize(ref _requestedUids, jointSpaces.Length);
+
+            for (int i = 0; i < jointSpaces.Length; i++)
+                _requestedUids[i] = jointSpaces[i].Uid;
+
+            return InvokeRetBool<int, int[], float[]>("nkXRFrame.FillJointRadii", jointSpaces.Length, _requestedUids, radii);
+        }
+
+        public unsafe bool FillPoses(XRSpace[] spaces, XRSpace baseSpace, Matrix4x4[] transforms)
+        {
+            if (spaces.Length == 0)
+                return false;
+            if (transforms.Length < spaces.Length)
+                throw new ArgumentException("transforms array is smaller than jointSpaces array.");
+
+            if (_requestedUids.Length < spaces.Length)
+                Array.Resize(ref _requestedUids, spaces.Length);
+
+            for (int i = 0; i < spaces.Length; i++)
+                _requestedUids[i] = spaces[i].Uid;
+
+            return InvokeRetBool<int, int[], int, Matrix4x4[]>("nkXRFrame.FillPoses", spaces.Length, _requestedUids, baseSpace.Uid, transforms);
         }
 
         public unsafe Task<XRAnchor> CreateAnchorAsync(XRRigidTransform pose, XRSpace baseSpace)

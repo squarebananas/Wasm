@@ -203,6 +203,108 @@ window.nkJSUInt8Array =
     },
 };
 
+window.nkJSMap =
+{
+    Get: function (uid, d)
+    {
+        var m = nkJSObject.GetObject(uid);
+        var k = this.ReadKey(m, d);
+        var v = m.get(k);
+        if (v === undefined)
+            return -1;
+        var existingUid = nkJSObject.GetUid(v);
+        if (existingUid !== -1)
+            return existingUid;
+        return nkJSObject.RegisterObject(v);
+    },
+    GetSize: function (uid, d)
+    {
+        var m = nkJSObject.GetObject(uid);
+        return m.size;
+    },
+    GetIterator: function (uid, d)
+    {
+        var m = nkJSObject.GetObject(uid);
+        var it = m.entries();
+        it.nkJSMap = m;
+        return nkJSObject.RegisterObject(it);
+    },
+    Has: function (uid, d)
+    {
+        var m = nkJSObject.GetObject(uid);
+        var k = this.ReadKey(m, d);
+        return m.has(k);
+    },
+    ReadKey: function (m, d)
+    {
+        var rk;
+        switch (m.nkJSMapKeyType)
+        {
+            case "int":
+                rk = Module.HEAP32[(d + 0) >> 2]; break;
+            default:
+                rk = nkJSObject.ReadString(d); break;
+        }
+        if (m.nkJSMapReadKey)
+            k = m.nkJSMapReadKey(rk);
+        return k;
+    },
+};
+
+window.nkJSMapIterator =
+{
+    GetNext: function (uid, d)
+    {
+        var it = nkJSObject.GetObject(uid);
+        var ptd = Module.HEAP32[(d + 0) >> 2];
+        var ptv = Module.HEAP32[(d + 4) >> 2];
+
+        var r = it.next();
+        var d = r.done === true;
+
+        var k, v;
+        if (!d)
+        {
+            if (r.value[0])
+                k = r.value[0];
+
+            if (r.value[1])
+                v = r.value[1];
+
+            var vid;
+            if (v)
+            {
+                vid = nkJSObject.GetUid(v);
+                if (vid == -1)
+                    vid = nkJSObject.RegisterObject(v);
+            }
+            else
+            {
+                vid = -1;
+            }
+        }
+
+        Module.HEAP32[(ptd + 0) >> 2] = d ? 1 : 0;
+        Module.HEAP32[(ptv + 0) >> 2] = vid;
+
+        if (k)
+        {
+            var wk = it.nkJSMap.nkJSMapWriteKey(k);
+            return wk;
+        }
+        else
+        {
+            switch (it.nkJSMap.nkJSMapKeyType)
+            {
+                case "int":
+                    return -1;
+                default:
+                    return null;
+            }
+        }
+    },
+};
+
 window.nkPromise =
 {
     GetValueBoolean: function (uid)
