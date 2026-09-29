@@ -846,6 +846,9 @@ namespace nkast.Wasm.Canvas.WebGL
                 case "WEBGL_lose_context":
                     return (TExtension)(WebGLExtension)new WebGLLoseContextExtension(uid);
 
+                case "WEBGL_polygon_mode":
+                    return (TExtension)(WebGLExtension)new WebGL2PolygonModeExtension(uid);
+
                 default:
                     return (TExtension)new WebGLExtension(uid);
             }

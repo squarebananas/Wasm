@@ -7,8 +7,21 @@ namespace nkast.Wasm.Canvas.WebGL
 {
     internal class WebGL2RenderingContext : WebGLRenderingContext, IWebGL2RenderingContext, IDisposable
     {
+        WebGL2PolygonModeExtension _polygonModeExtension;
+
         internal WebGL2RenderingContext(Canvas canvas, int uid) : base(canvas, uid)
         {
+        }
+
+        public WebGL2PolygonModeExtension PolygonModeExtension
+        {
+            get
+            {
+                if (_polygonModeExtension == null)
+                    _polygonModeExtension = GetExtension<WebGL2PolygonModeExtension>("WEBGL_polygon_mode");
+
+                return _polygonModeExtension;
+            }
         }
 
         public int GetParameter(WebGL2PNameInteger pname)
